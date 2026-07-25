@@ -207,15 +207,12 @@ async function sendEmail() {
   emailSent.value = false
 
   try {
-    const base = window.location.pathname.replace(/\/+$/, '') + '/'
     const eventName = shareEvent.value?.nome_evento || shareEvent.value?.nome || 'Meu Evento'
-    const accessLink = `${window.location.origin}${base}?access=${shareEvent.value?.codigo_acesso || ''}`
 
     const result = await sendShareEmail({
       email: store.email,
       eventName,
-      shareUrl: shareUrl.value,
-      accessUrl: accessLink
+      shareUrl: shareUrl.value
     })
 
     if (result?.ok) {

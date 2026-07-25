@@ -155,7 +155,7 @@
           <p style="font-size:12px;color:rgba(248,244,235,0.5);letter-spacing:0.8px;margin-bottom:8px;text-transform:uppercase;font-weight:600;">📧 Enviado para</p>
           <p style="font-size:15px;font-weight:600;color:var(--cream);">{{ payEmail }}</p>
         </div>
-        <p style="font-size:13px;color:rgba(248,244,235,0.55);margin-bottom:8px;">🔗 Link de acesso exclusivo:</p>
+        <p style="font-size:13px;color:rgba(248,244,235,0.55);margin-bottom:8px;">🔗 Link para convidados:</p>
         <div class="access-link-box" style="user-select:all;">{{ accessUrl }}</div>
         <div style="background:linear-gradient(160deg,var(--charcoal2),var(--charcoal));border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:24px;text-align:left;">
           <p style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:10px;letter-spacing:0.6px;">SEU EVENTO</p>
@@ -299,15 +299,13 @@ async function processPayment() {
       })
       store.setEmailAddr(payEmail.value)
 
-      accessUrl.value = `${window.location.origin}/app?access=${evento.codigo_acesso}`
+      accessUrl.value = `${window.location.origin}/?join=${evento.share_code}`
 
       // Enviar link por email
-      const shareLink = `${window.location.origin}/?join=${evento.share_code}`
       sendShareEmail({
         email: payEmail.value,
         eventName: eventName.value || 'Meu Evento',
-        shareUrl: shareLink,
-        accessUrl: accessUrl.value
+        shareUrl: accessUrl.value
       }).catch(err => console.warn('Email send failed:', err))
 
       wizardStep.value = 3

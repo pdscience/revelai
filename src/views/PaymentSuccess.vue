@@ -82,15 +82,12 @@ onMounted(async () => {
       store.saveState()
 
       // Enviar link por email
-      const base = window.location.pathname.replace(/\/+$/, '') + '/'
-      const shareLink = `${window.location.origin}${base}?join=${evento.share_code}`
-      const accessLink = `${window.location.origin}${base}?access=${evento.codigo_acesso}`
+      const shareLink = `${window.location.origin}/?join=${evento.share_code}`
       if (store.email) {
         sendShareEmail({
           email: store.email,
           eventName: evento.nome_evento || 'Meu Evento',
-          shareUrl: shareLink,
-          accessUrl: accessLink
+          shareUrl: shareLink
         }).catch(err => console.warn('Email send failed:', err))
       }
     }
