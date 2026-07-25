@@ -31,7 +31,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAppStore } from '../stores/app.js'
-import { criarPagamento, atualizarEvento, buscarEventoPorCodigo, ensureAuth, verifyCheckoutSession } from '../composables/useInsForge.js'
+import { criarPagamento, atualizarEvento, buscarEventoPorCodigo, ensureAuth, verifyCheckoutSession, sendShareEmail } from '../composables/useInsForge.js'
 
 const router = useRouter()
 const route = useRoute()
@@ -80,6 +80,19 @@ onMounted(async () => {
       store.setAccess(evento.codigo_acesso)
       store.currentEventoId = evento.id
       store.saveState()
+
+      // Enviar link por email
+      const base = window.location.pathname.replace(/\/+$/, '') + '/'
+      const shareLink = `${window.location.origin}${base}?join=${evento.share_code}`
+      const accessLink = `${window.location.origin}${base}?access=${evento.codigo_acesso}`
+      if (store.email) {
+        sendShareEmail({
+          email: store.email,
+          eventName: evento.nome_evento || 'Meu Evento',
+          shareUrl: shareLink,
+          accessUrl: accessLink
+        }).catch(err => console.warn('Email send failed:', err))
+      }
     }
 
     loading.value = false

@@ -39,7 +39,11 @@
         <div class="flex gap-3">
           <button class="btn-app-outline flex-1" @click="copyShareLink">📋 Copiar</button>
           <button class="btn-gold flex-1" @click="shareNative">📤 Compartilhar</button>
+          <button class="btn-app-outline flex-1" @click="sendEmail" :disabled="isSendingEmail">
+            {{ isSendingEmail ? '⏳' : '📧' }}
+          </button>
         </div>
+        <p v-if="emailSent" class="text-xs mt-3" style="color:var(--accent3);">✅ Link enviado por email!</p>
       </div>
     </div>
 
@@ -83,6 +87,7 @@ import { useRouter } from 'vue-router'
 import { useAppStore } from '../stores/app.js'
 import QRCode from 'qrcode'
 import CreateEventWizard from '../components/CreateEventWizard.vue'
+import { sendShareEmail } from '../composables/useInsForge.js'
 
 import AppHome from '../components/AppHome.vue'
 import AppCamera from '../components/AppCamera.vue'
@@ -105,6 +110,8 @@ let toastTimer = null
 const shareUrl = ref('')
 const shareEvent = ref(null)
 const detailEvent = ref(null)
+const isSendingEmail = ref(false)
+const emailSent = ref(false)
 
 const detailExpired = computed(() => {
   if (!detailEvent.value?.data_fim) return false
@@ -158,6 +165,7 @@ function openShareModal() {
   const evento = store.eventos[0]
   shareEvent.value = evento
   shareUrl.value = generateShareUrl(evento)
+  emailSent.value = false
   showShareModal.value = true
   nextTick(generateQR)
 }
@@ -190,6 +198,40 @@ function shareNative() {
   } else copyShareLink()
 }
 
+async function sendEmail() {
+  if (!store.email) {
+    showToast('Cadastre seu email no perfil primeiro')
+    return
+  }
+  if (isSendingEmail.value) return
+  isSendingEmail.value = true
+  emailSent.value = false
+
+  try {
+    const base = window.location.pathname.replace(/\/+$/, '') + '/'
+    const eventName = shareEvent.value?.nome_evento || shareEvent.value?.nome || 'Meu Evento'
+    const accessLink = `${window.location.origin}${base}?access=${shareEvent.value?.codigo_acesso || ''}`
+
+    const result = await sendShareEmail({
+      email: store.email,
+      eventName,
+      shareUrl: shareUrl.value,
+      accessUrl: accessLink
+    })
+
+    if (result?.ok) {
+      emailSent.value = true
+      showToast('📧 Link enviado!')
+    } else {
+      showToast('Erro ao enviar email')
+    }
+  } catch (err) {
+    showToast('Erro ao enviar email')
+  } finally {
+    isSendingEmail.value = false
+  }
+}
+
 function openEventDetail(id) {
   detailEvent.value = store.eventos.find(e => e.id === id) || null
   showDetailModal.value = true
@@ -199,6 +241,7 @@ function shareFromDetail() {
   showDetailModal.value = false
   shareEvent.value = detailEvent.value
   shareUrl.value = generateShareUrl(detailEvent.value)
+  emailSent.value = false
   showShareModal.value = true
   nextTick(generateQR)
 }

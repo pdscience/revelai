@@ -16,6 +16,7 @@
             <span v-if="isDownloading" class="spinner-glow sm" style="margin-right:4px;"></span>
             {{ isDownloading ? `${downloadProgress}%` : '⬇️' }}
           </button>
+          <button v-if="store.currentPhotos.length > 0" class="btn-app-outline text-xs py-2 px-3" style="color:#ff4d3d;border-color:rgba(255,77,61,0.3);" @click="deleteAllPhotos">🗑️</button>
         </div>
       </div>
 
@@ -205,6 +206,19 @@ function deleteLightboxPhoto() {
   store.deletarFoto(lightboxIdx.value)
   if (store.currentPhotos.length === 0) closeLightbox()
   else lightboxIdx.value = Math.min(lightboxIdx.value, store.currentPhotos.length - 1)
+}
+
+async function deleteAllPhotos() {
+  if (!confirm('Excluir TODAS as fotos deste evento? Esta ação não pode ser desfeita.')) return
+  if (!confirm('Tem certeza absoluta? Todas as fotos serão apagadas permanentemente.')) return
+
+  const result = await store.deletarTodasFotosEvento()
+  if (result?.ok) {
+    closeLightbox()
+    showToast(`🗑️ ${result.fotos_deletadas || 0} fotos excluídas!`)
+  } else {
+    showToast('Erro ao excluir fotos')
+  }
 }
 
 async function downloadAll() {

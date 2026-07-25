@@ -186,7 +186,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAppStore } from '../stores/app.js'
-import { createCheckoutSession, fetchPlans } from '../composables/useInsForge.js'
+import { createCheckoutSession, fetchPlans, sendShareEmail } from '../composables/useInsForge.js'
 
 const emit = defineEmits(['close', 'created'])
 const router = useRouter()
@@ -307,6 +307,15 @@ async function processPayment() {
 
       const base = window.location.pathname.replace(/\/+$/, '') + '/'
       accessUrl.value = `${window.location.origin}${base}?access=${evento.codigo_acesso}`
+
+      // Enviar link por email
+      const shareLink = `${window.location.origin}${base}?join=${evento.share_code}`
+      sendShareEmail({
+        email: payEmail.value,
+        eventName: eventName.value || 'Meu Evento',
+        shareUrl: shareLink,
+        accessUrl: accessUrl.value
+      }).catch(err => console.warn('Email send failed:', err))
 
       wizardStep.value = 4
       processingPayment.value = false

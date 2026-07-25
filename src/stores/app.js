@@ -11,8 +11,8 @@ import {
   registrarFoto,
   buscarFotosEvento,
   uploadPhotoBlob,
-  deletePhotoFromStorage,
-  deletarFotoDB,
+  deletarFotoRPC,
+  deletarTodasFotos as deletarTodasFotosRPC,
   criarPagamento,
   subscribeToPhotos,
   unsubscribeFromPhotos
@@ -323,40 +323,32 @@ export const useAppStore = defineStore('app', () => {
     unsubscribeFromPhotos()
   }
 
-  // ── Deletar foto ──
+  // ── Deletar foto (via RPC server-side) ──
   async function deletarFoto(photoIndex) {
     const foto = currentPhotos.value[photoIndex]
     if (!foto) return
 
-    // Deletar do storage
-    if (foto.storage_key) {
-      await deletePhotoFromStorage(foto.storage_key)
-    }
-
-    // Deletar do banco de dados
-    if (foto.id) {
-      await deletarFotoDB(foto.id)
-    }
-
-    // Decrementar contador do convidado no banco
-    if (convidadoInfo.value) {
-      const insforge = (await import('../composables/useInsForge.js')).getInsForge()
-      if (insforge) {
-        try {
-          await insforge.database.rpc('decrementar_foto_convidado', {
-            p_evento_id: convidadoInfo.value.eventoId,
-            p_device_id: deviceId
-          })
-        } catch (err) {
-          console.warn('Decrementar foto failed:', err)
-        }
+    const result = await deletarFotoRPC(foto.id)
+    if (result?.ok) {
+      currentPhotos.value.splice(photoIndex, 1)
+      if (convidadoInfo.value && convidadoInfo.value.fotosTiradas > 0) {
+        convidadoInfo.value.fotosTiradas--
       }
     }
+  }
 
-    currentPhotos.value.splice(photoIndex, 1)
-    if (convidadoInfo.value && convidadoInfo.value.fotosTiradas > 0) {
-      convidadoInfo.value.fotosTiradas--
+  // ── Deletar todas as fotos do evento ──
+  async function deletarTodasFotosEvento() {
+    if (!convidadoInfo.value) return { ok: false, erro: 'Não há evento ativo' }
+
+    const result = await deletarTodasFotosRPC(convidadoInfo.value.eventoId)
+    if (result?.ok) {
+      currentPhotos.value = []
+      if (convidadoInfo.value) {
+        convidadoInfo.value.fotosTiradas = 0
+      }
     }
+    return result
   }
 
   // ── Profile ──
@@ -398,6 +390,7 @@ export const useAppStore = defineStore('app', () => {
     saveState, loadState, setAccess, setEmailAddr, setOrderCode, setPlan,
     criarNovoEvento, carregarEventos, entrarComoAnfitriao,
     entrarNoEvento, verificarLimiteFoto, tirarFoto, carregarFotos, deletarFoto,
+    deletarTodasFotosEvento,
     iniciarRealtimeFotos, pararRealtimeFotos,
     updateProfile, reset
   }

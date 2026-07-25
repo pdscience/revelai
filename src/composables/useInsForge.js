@@ -176,6 +176,40 @@ export async function decrementarFotoConvidado(eventoId, deviceId) {
   }
 }
 
+// Deletar foto via RPC (storage + DB + decrementar contadores)
+export async function deletarFotoRPC(fotoId) {
+  const insforge = getInsForge()
+  if (!insforge) return { ok: false, erro: 'InsForge not configured' }
+
+  try {
+    const { data, error } = await insforge.database
+      .rpc('deletar_foto', { p_foto_id: fotoId })
+
+    if (error) throw error
+    return data
+  } catch (err) {
+    console.warn('Deletar foto RPC failed:', err)
+    return { ok: false, erro: err.message }
+  }
+}
+
+// Deletar todas as fotos de um evento via RPC
+export async function deletarTodasFotos(eventoId) {
+  const insforge = getInsForge()
+  if (!insforge) return { ok: false, erro: 'InsForge not configured' }
+
+  try {
+    const { data, error } = await insforge.database
+      .rpc('delete_event_photos', { p_evento_id: eventoId })
+
+    if (error) throw error
+    return data
+  } catch (err) {
+    console.warn('Deletar todas fotos failed:', err)
+    return { ok: false, erro: err.message }
+  }
+}
+
 // ============================================================
 // EVENTOS (CRUD para anfitrião)
 // ============================================================
@@ -472,6 +506,27 @@ export async function verifyCheckoutSession(sessionId) {
   } catch (err) {
     console.warn('Verify checkout failed:', err)
     return null
+  }
+}
+
+// ============================================================
+// EMAIL — Enviar link de compartilhamento
+// ============================================================
+
+export async function sendShareEmail({ email, eventName, shareUrl, accessUrl }) {
+  const insforge = getInsForge()
+  if (!insforge) return { ok: false, erro: 'InsForge not configured' }
+
+  try {
+    const { data, error } = await insforge.functions.invoke('send-share-email', {
+      body: { email, eventName, shareUrl, accessUrl }
+    })
+
+    if (error) throw error
+    return data
+  } catch (err) {
+    console.warn('Send share email failed:', err)
+    return { ok: false, erro: err.message }
   }
 }
 
