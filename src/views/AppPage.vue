@@ -153,8 +153,7 @@ function onWizardCreated() {
 }
 
 function generateShareUrl(evento) {
-  const base = window.location.pathname.replace(/\/+$/, '') + '/'
-  return `${window.location.origin}${base}?join=${evento.share_code}`
+  return `${window.location.origin}/?join=${evento.share_code}`
 }
 
 function openShareModal() {
@@ -246,8 +245,8 @@ function shareFromDetail() {
   nextTick(generateQR)
 }
 
-function openCameraFromDetail() {
-  store.entrarComoAnfitriao(detailEvent.value)
+async function openCameraFromDetail() {
+  await store.entrarComoAnfitriao(detailEvent.value)
   showDetailModal.value = false
   activeTab.value = 'camera'
 }

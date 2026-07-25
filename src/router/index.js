@@ -10,6 +10,9 @@ const routes = [
     name: 'app',
     component: AppPage,
     beforeEnter: (to) => {
+      if (to.query.join) {
+        return { path: '/guest', query: { join: to.query.join } }
+      }
       const stored = sessionStorage.getItem('revelai_access')
       if (!stored && !to.query.access) {
         return { path: '/' }

@@ -171,7 +171,8 @@ export const useAppStore = defineStore('app', () => {
       limiteFotos,
       totalConectados: evento.total_convidados_conectados || 0,
       fotosTiradas,
-      jaCadastrado: entrada?.ja_cadastrado || false
+      jaCadastrado: entrada?.ja_cadastrado || false,
+      isHost: true
     }
 
     currentEventoId.value = evento.id

@@ -16,7 +16,7 @@
             <span v-if="isDownloading" class="spinner-glow sm" style="margin-right:4px;"></span>
             {{ isDownloading ? `${downloadProgress}%` : '⬇️' }}
           </button>
-          <button v-if="store.currentPhotos.length > 0" class="btn-app-outline text-xs py-2 px-3" style="color:#ff4d3d;border-color:rgba(255,77,61,0.3);" @click="deleteAllPhotos">🗑️</button>
+          <button v-if="store.currentPhotos.length > 0 && store.convidadoInfo?.isHost" class="btn-app-outline text-xs py-2 px-3" style="color:#ff4d3d;border-color:rgba(255,77,61,0.3);" @click="deleteAllPhotos">🗑️</button>
         </div>
       </div>
 

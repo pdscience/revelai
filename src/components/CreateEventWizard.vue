@@ -5,13 +5,13 @@
         <div>
           <p class="text-xs" style="color:var(--accent3);letter-spacing:2.5px;font-weight:700;text-transform:uppercase;margin-bottom:4px;">Novo evento</p>
           <h3 class="serif text-xl">Criar Evento</h3>
-          <p style="font-size:13px;color:rgba(248,244,235,0.45);">Passo {{ wizardStep + 1 }} de 4</p>
+          <p style="font-size:13px;color:rgba(248,244,235,0.45);">Passo {{ wizardStep + 1 }} de 3</p>
         </div>
         <button @click="$emit('close')" style="color:rgba(248,244,235,0.4);font-size:24px;line-height:1;padding:4px;background:none;border:none;cursor:pointer;">✕</button>
       </div>
 
       <div class="wizard-progress">
-        <div v-for="s in 4" :key="s" class="wiz-dot" :class="{ active: wizardStep >= s - 1, done: wizardStep > s - 1 }"></div>
+        <div v-for="s in 3" :key="s" class="wiz-dot" :class="{ active: wizardStep >= s - 1, done: wizardStep > s - 1 }"></div>
       </div>
 
       <!-- STEP 0: Choose Plan -->
@@ -45,18 +45,32 @@
         <button class="btn-primary w-full mt-6" style="width:100%;" :disabled="!selectedPlan" @click="nextStep">Continuar →</button>
       </div>
 
-      <!-- STEP 1: Event Name + Date -->
+      <!-- STEP 1: Event Name + Reveal Timing + Date -->
       <div v-show="wizardStep === 1" class="wizard-step">
         <div class="text-center mb-6">
           <p style="font-size:36px;filter:drop-shadow(0 0 16px rgba(255,122,46,0.4));">📅</p>
-          <h4 class="serif text-lg mt-3">Nome e data do evento</h4>
-          <p style="font-size:13px;color:rgba(248,244,235,0.42);">Dê um nome ao seu evento e escolha quando as fotos serão reveladas.</p>
+          <h4 class="serif text-lg mt-3">Nome e revelação</h4>
+          <p style="font-size:13px;color:rgba(248,244,235,0.42);">Dê um nome ao evento e escolha quando as fotos serão reveladas.</p>
         </div>
         <div style="display:flex;flex-direction:column;gap:16px;">
           <div>
             <label class="input-label">NOME DO EVENTO *</label>
             <input class="input-field" type="text" v-model="eventName" placeholder="Ex: Casamento Ana & João">
           </div>
+
+          <div>
+            <label class="input-label" style="margin-bottom:10px;display:block;">QUANDO REVELAR? *</label>
+            <div class="flex flex-col gap-2">
+              <div v-for="opt in revealOptions" :key="opt.value" class="wiz-card" :class="{ selected: revealTiming === opt.value }" @click="revealTiming = opt.value" style="padding:12px 14px;">
+                <span style="font-size:20px;">{{ opt.icon }}</span>
+                <div>
+                  <div class="font-semibold" style="color:var(--cream);font-size:13px;">{{ opt.label }}</div>
+                  <div style="font-size:11px;color:rgba(248,244,235,0.42);">{{ opt.desc }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div v-if="revealTiming === 'during'">
             <label class="input-label">DATA DO EVENTO *</label>
             <input class="input-field" type="date" v-model="eventDate" :min="setTodayMin()">
@@ -65,38 +79,16 @@
             <label class="input-label">DATA DA REVELAÇÃO *</label>
             <input class="input-field" type="date" v-model="revealDate" :min="setTodayMin()">
           </div>
-          <div v-if="revealTiming === 'after' || revealTiming === 'later'">
+          <div v-if="revealTiming === 'after'">
             <label class="input-label">HORÁRIO DA REVELAÇÃO</label>
             <input class="input-field" type="time" v-model="revealTime">
           </div>
         </div>
-        <button class="btn-primary w-full mt-6" style="width:100%;" :disabled="!eventName" @click="nextStep">Continuar →</button>
+        <button class="btn-primary w-full mt-6" style="width:100%;" :disabled="!eventName || (revealTiming !== 'during' && !revealDate)" @click="nextStep">Continuar →</button>
       </div>
 
-      <!-- STEP 2: Reveal Timing -->
+      <!-- STEP 2: Payment -->
       <div v-show="wizardStep === 2" class="wizard-step">
-        <div class="text-center mb-6">
-          <p style="font-size:36px;filter:drop-shadow(0 0 16px rgba(255,122,46,0.4));">🎞️</p>
-          <h4 class="serif text-lg mt-3">Quando revelar?</h4>
-          <p style="font-size:13px;color:rgba(248,244,235,0.42);">Escolha o momento mágico da revelação das fotos.</p>
-        </div>
-        <div class="flex flex-col gap-3">
-          <div v-for="opt in revealOptions" :key="opt.value" class="wiz-card" :class="{ selected: revealTiming === opt.value }" @click="revealTiming = opt.value">
-            <span style="font-size:24px;">{{ opt.icon }}</span>
-            <div>
-              <div class="font-semibold" style="color:var(--cream);">{{ opt.label }}</div>
-              <div style="font-size:12px;color:rgba(248,244,235,0.42);">{{ opt.desc }}</div>
-            </div>
-          </div>
-        </div>
-        <div class="flex gap-3 mt-6">
-          <button class="btn-app-outline flex-1" @click="prevStep">← Voltar</button>
-          <button class="btn-primary flex-1" @click="nextStep">Continuar →</button>
-        </div>
-      </div>
-
-      <!-- STEP 3: Payment -->
-      <div v-show="wizardStep === 3" class="wizard-step">
         <div class="order-summary" style="margin-bottom:20px;">
           <div class="flex justify-between">
             <div>
@@ -154,8 +146,8 @@
         <p v-if="selectedPlan && selectedPlan.preco_centavos > 0" style="text-align:center;font-size:11px;color:rgba(248,244,235,0.32);margin-top:12px;">🔒 Pagamento 100% seguro e criptografado</p>
       </div>
 
-      <!-- STEP 4: Success -->
-      <div v-show="wizardStep === 4" class="wizard-step text-center">
+      <!-- STEP 3: Success -->
+      <div v-show="wizardStep === 3" class="wizard-step text-center">
         <div class="success-icon">🎉</div>
         <h3 class="serif text-2xl mb-2">{{ selectedPlan?.preco_centavos === 0 ? 'Evento criado!' : 'Pagamento confirmado!' }}</h3>
         <p style="font-size:14px;color:rgba(248,244,235,0.55);margin-bottom:24px;">Seu evento foi criado. Compartilhe o link com os convidados para começarem a fotografar.</p>
@@ -238,7 +230,7 @@ function selectPlan(plan) {
 }
 
 function nextStep() {
-  if (wizardStep.value < 4) wizardStep.value++
+  if (wizardStep.value < 3) wizardStep.value++
 }
 
 function prevStep() {
@@ -278,9 +270,11 @@ async function processPayment() {
       nomeEvento: eventName.value || 'Meu Evento',
       planoId: selectedPlan.value.id,
       dataInicio: eventDate.value || now,
-      dataFim: revealDate.value || new Date(Date.now() + 7 * 86400000).toISOString(),
+      dataFim: revealTiming.value === 'during'
+        ? (eventDate.value ? new Date(eventDate.value + 'T23:59:59').toISOString() : new Date(Date.now() + 7 * 86400000).toISOString())
+        : (revealDate.value ? new Date(revealDate.value + 'T23:59:59').toISOString() : new Date(Date.now() + 7 * 86400000).toISOString()),
       revelacaoModo: revealTiming.value === 'during' ? 'instant' : revealTiming.value === 'after' ? 'delayed' : 'manual',
-      revelacaoTime: (revealTiming.value === 'after' || revealTiming.value === 'later') && revealDate.value
+      revelacaoTime: revealTiming.value === 'after' && revealDate.value
         ? `${revealDate.value}T${revealTime.value || '00:00'}`
         : null
     })
@@ -305,11 +299,10 @@ async function processPayment() {
       })
       store.setEmailAddr(payEmail.value)
 
-      const base = window.location.pathname.replace(/\/+$/, '') + '/'
-      accessUrl.value = `${window.location.origin}${base}?access=${evento.codigo_acesso}`
+      accessUrl.value = `${window.location.origin}/app?access=${evento.codigo_acesso}`
 
       // Enviar link por email
-      const shareLink = `${window.location.origin}${base}?join=${evento.share_code}`
+      const shareLink = `${window.location.origin}/?join=${evento.share_code}`
       sendShareEmail({
         email: payEmail.value,
         eventName: eventName.value || 'Meu Evento',
@@ -317,7 +310,7 @@ async function processPayment() {
         accessUrl: accessUrl.value
       }).catch(err => console.warn('Email send failed:', err))
 
-      wizardStep.value = 4
+      wizardStep.value = 3
       processingPayment.value = false
       return
     }
