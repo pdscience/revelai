@@ -13,7 +13,7 @@
     <div style="max-width:700px;margin:0 auto;padding:100px 24px 60px;">
       <p class="text-xs mb-2" style="color:var(--accent3);letter-spacing:2.5px;font-weight:700;text-transform:uppercase;">Legal</p>
       <h1 class="serif text-3xl mb-2" style="background:linear-gradient(135deg,var(--accent3),var(--accent) 50%,var(--accent2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">Política de Privacidade</h1>
-      <p class="text-sm mb-8" style="color:rgba(248,244,235,0.42);">Última atualização: 24 de julho de 2026</p>
+      <p class="text-sm mb-8" style="color:rgba(248,244,235,0.42);">Última atualização: 25 de julho de 2026</p>
 
       <div class="prose">
         <h2>1. Informações que Coletamos</h2>
@@ -37,7 +37,7 @@
         <p>As fotos são armazenadas de forma segura em servidores na região configurada. Politica de retenção:</p>
         <ul>
           <li>Fotos são mantidas enquanto o evento estiver ativo</li>
-          <li>Após o encerramento do evento, as fotos são mantidas por até <strong>90 dias</strong></li>
+          <li>Após o encerramento do evento, as fotos são mantidas por até <strong>10 dias</strong></li>
           <li>Após este período, as fotos são permanentemente excluídas</li>
           <li>Anfitriões podem deletar fotos manualmente a qualquer momento</li>
         </ul>

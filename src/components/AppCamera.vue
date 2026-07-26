@@ -123,7 +123,7 @@ async function initCamera() {
   if (cameraStream.value) return
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: currentFacingMode.value, width: { ideal: 1920 }, height: { ideal: 1080 } },
+      video: { facingMode: currentFacingMode.value, width: { ideal: 1280 }, height: { ideal: 720 } },
       audio: false
     })
     cameraStream.value = stream
@@ -243,7 +243,7 @@ async function takePhoto() {
     applyCanvasFilter(ctx, canvas)
 
     // 7. Converter para dataUrl
-    const dataUrl = canvas.toDataURL('image/jpeg', 0.88)
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.78)
 
     // 8. Enviar para DB (upload + registro + incremento server-side)
     const resultado = await store.tirarFoto(dataUrl, currentFilter.value)

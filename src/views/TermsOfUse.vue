@@ -13,7 +13,7 @@
     <div style="max-width:700px;margin:0 auto;padding:100px 24px 60px;">
       <p class="text-xs mb-2" style="color:var(--accent3);letter-spacing:2.5px;font-weight:700;text-transform:uppercase;">Legal</p>
       <h1 class="serif text-3xl mb-2" style="background:linear-gradient(135deg,var(--accent3),var(--accent) 50%,var(--accent2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">Termos de Uso</h1>
-      <p class="text-sm mb-8" style="color:rgba(248,244,235,0.42);">Última atualização: 24 de julho de 2026</p>
+      <p class="text-sm mb-8" style="color:rgba(248,244,235,0.42);">Última atualização: 25 de julho de 2026</p>
 
       <div class="prose">
         <h2>1. Aceitação dos Termos</h2>
@@ -69,7 +69,16 @@
           <li>Danos indiretos decorrentes do uso</li>
         </ul>
 
-        <h2>8. Proibido</h2>
+        <h2>8. Retenção e Exclusão de Dados</h2>
+        <ul>
+          <li>As fotos são armazenadas durante o período de atividade do evento</li>
+          <li>Após o encerramento do evento, as fotos são automaticamente excluídas após 10 dias</li>
+          <li>É responsabilidade do anfitrião fazer o download das fotos antes do prazo de exclusão</li>
+          <li>O RevelaI não se responsabiliza por fotos não baixadas antes da exclusão automática</li>
+          <li>Dados de cadastro são mantidos enquanto a conta estiver ativa</li>
+        </ul>
+
+        <h2>9. Proibido</h2>
         <ul>
           <li>Violar leis ou regulamentos</li>
           <li>Interromper o funcionamento da plataforma</li>
@@ -77,10 +86,10 @@
           <li>Utilizar para fins comerciais não autorizados</li>
         </ul>
 
-        <h2>9. Modificações</h2>
+        <h2>10. Modificações</h2>
         <p>Reservamo-nos o direito de modificar estes termos a qualquer momento. Usuários serão notificados de mudanças significativas.</p>
 
-        <h2>10. Legislação Aplicável</h2>
+        <h2>11. Legislação Aplicável</h2>
         <p>Estes termos são regidos pelas leis da República Federativa do Brasil. Fica eleito o foro da comarca de São Paulo/SP para dirimir quaisquer questões.</p>
       </div>
     </div>

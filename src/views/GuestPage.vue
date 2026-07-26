@@ -231,7 +231,7 @@ async function initCamera() {
   if (cameraStream.value) return
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } },
+      video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
       audio: false
     })
     cameraStream.value = stream
@@ -282,7 +282,7 @@ async function takePhoto() {
 
   ctx.drawImage(video, 0, 0)
 
-  const dataUrl = canvas.toDataURL('image/jpeg', 0.88)
+  const dataUrl = canvas.toDataURL('image/jpeg', 0.78)
 
   const resultado = await store.tirarFoto(dataUrl, currentFilter.value)
 

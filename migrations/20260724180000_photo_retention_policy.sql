@@ -3,7 +3,7 @@
 -- ============================================================
 
 -- Função para limpar fotos de eventos encerrados há mais de X dias
-CREATE OR REPLACE FUNCTION public.cleanup_old_photos(days_to_keep integer DEFAULT 90)
+CREATE OR REPLACE FUNCTION public.cleanup_old_photos(days_to_keep integer DEFAULT 10)
 RETURNS json
 LANGUAGE plpgsql
 SECURITY DEFINER
